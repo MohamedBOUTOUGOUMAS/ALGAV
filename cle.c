@@ -35,7 +35,7 @@ int inf(cle* a, cle* b) {
 }
 
 int test() {
-  FILE* fp = fopen("/Users/polybulle/Downloads/cles_alea/jeu_1_nb_cles_100.txt", "r");
+  FILE* fp = fopen("/home/moumouh/git/ALGAV/cles_alea/jeu_1_nb_cles_100.txt", "r");
   if(!fp) return 1;
   char temp[36] = {0};
 
@@ -50,4 +50,10 @@ int test() {
   }
   
   return 0;
+}
+
+
+int main(int argc, char *argv[]){
+	test();
+	return 0;
 }

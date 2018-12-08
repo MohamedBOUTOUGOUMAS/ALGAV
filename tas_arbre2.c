@@ -24,11 +24,11 @@ void percoler(tas *arg) {
   tas *t = arg;
   while(t) {
     tas *min = t;
-    if(tas->gauche && inf(tas->gauche->cle, tas->cle)) {
-      min = tas.gauche;
+    if(t->gauche && inf(t->gauche->cle, t->cle)) {
+      min = t->gauche;
     }
-    if(tas->droite && inf(tas->droite->cle, min->cle)) {
-      min = tas.droite;
+    if(t->droite && inf(t->droite->cle, min->cle)) {
+      min = t->droite;
     }
     if(min != t) {
       cle* tmp = t->cle;
@@ -44,7 +44,7 @@ void percoler(tas *arg) {
 tas* dernier(tas* arg) {
   tas *t = arg;
   if(!t) {return NULL;}
-  while(...) {
+  while(t) {
     if(!t->gauche) {return t;}
     if(!t->droite) {return t->gauche;}
     if(t->full) {
@@ -78,7 +78,7 @@ int ajout(cle* c, tas* t, int hauteur, int nb_noeuds) {
 		 *
 		 * hauteur et nb_noeuds sont donnés pendant le premier appel de ajout
 		 * */
-		if(hauteur >= int(log(nb_noeuds))+1){
+		if(hauteur >= ((int)log(nb_noeuds))+1){
 			return 0;
 		}
 		tas * tmp;
@@ -88,7 +88,7 @@ int ajout(cle* c, tas* t, int hauteur, int nb_noeuds) {
 		t = p;
 		return 1;
 	}else if(!p->droite){
-		if(hauteur >= int(log(nb_noeuds))+1){
+		if(hauteur >= ((int)log(nb_noeuds)) +1){
 			return 0;
 		}
 		tas * tmp;
@@ -100,11 +100,11 @@ int ajout(cle* c, tas* t, int hauteur, int nb_noeuds) {
 	}else if(ajout(c,p->gauche,hauteur+1,nb_noeuds) == 0){ // on n'a pas pu ajouter
 		return ajout(c,p->droite,hauteur+1,nb_noeuds);
 	}
-
+return 0;
 }
 
 tas * consIter(cle * list[], tas * t){
-	int taille = sizeof(list)/sizeof(struct cle);
+	int taille = sizeof(list)/sizeof(cle);
 	for(int i = 0; i<taille;i++){
 		t->nb_noeuds = t->nb_noeuds + ajout(list[i],t,1,t->nb_noeuds);
 	}
@@ -113,53 +113,45 @@ tas * consIter(cle * list[], tas * t){
 
 
 
-tas * Union(tas * t1, tas * t2){ /* a terminer!!!!!!!!!!!*/
+int ajout_sans_percoler(cle * c, tas * t, int hauteur, int nb_noeuds){
+	tas * tmp = newTas();
+	tmp->cle = c;
+	if(!t){
+		t = tmp;
+	}else if(!t->gauche){
+		if(hauteur >= ((int)log(nb_noeuds)) +1){
+			return 0;
+		}
+		t->gauche = tmp;
+		return 1;
+	}else if(!t->droite){
+		if(hauteur >= ((int)log(nb_noeuds)) +1){
+			return 0;
+		}
+		t->droite = tmp;
+		return 1;
+	}
+	if(ajout_sans_percoler(c,t->gauche,hauteur+1,nb_noeuds) == 0){
+		return ajout_sans_percoler(c,t->droite,hauteur+1,nb_noeuds);
+	}
+return 0;
+}
+
+
+void infix(tas * t,tas * tas_u) {
+    if (t->gauche) infix(t->gauche,tas_u);
+    tas_u->nb_noeuds = tas_u->nb_noeuds + ajout_sans_percoler(t->cle, tas_u, 1, tas_u->nb_noeuds);
+    if (t->droite) infix(t->droite,tas_u);
+}
+
+tas * Union(tas * t1, tas * t2){ // a terminer!!!!!!!!!!!
 	tas * tas_u = newTas();
 	tas * p = t1;
 	tas * q = t2;
-	while(p && q){
-		tas * tmp_g = newTas();
-		tas * tmp_d = newTas();
-		if(inf(p->cle,q->cle)){
-			if(!tas_u->cle){
-				tas_u->cle = p->cle;
-				tmp_g->cle = q->cle;
-				tas_u->gauche = tmp_g;
-			}else if(!tas_u->gauche){
-				tmp_g->cle = p->cle;
-				tmp_d->cle = q->cle;
-				tas_u->gauche = tmp_g;
-				tas_u->droite = tmp_d;
-			}else if(!tas_u->droite){
-				tmp_d->cle = p->cle;
-				tmp_g->cle = q->cle;
-				tas_u->droite = tmp_d;
-				tas * next = newTas();
-				next = tas_u->gauche;
-				next->gauche = tmp_g;
-			}
-		}else{
-			if(!tas_u->cle){
-				tas_u->cle = q->cle;
-				tmp_g->cle = p->cle;
-				tas_u->gauche = tmp_g;
-			}else if(!tas_u->gauche){
-				tmp_g->cle = q->cle;
-				tmp_d->cle = p->cle;
-				tas_u->gauche = tmp_g;
-				tas_u->droite = tmp_d;
-			}else if(!tas_u->droite){
-				tmp_d->cle = q->cle;
-				tmp_g->cle = p->cle;
-				tas_u->droite = tmp_d;
-				tas * next = newTas();
-				next = tas_u->gauche;
-				next->gauche = tmp_g;
-			}
-		}
-		p = p->gauche;
-		q = q->gauche;
-	}
+	infix(p,tas_u);
+	infix(q,tas_u);
+	percoler(tas_u);
+	return tas_u;
 }
 
 
