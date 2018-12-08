@@ -65,6 +65,8 @@ int Hauteur(ABR * A){
 	ABR * p = A;
 	if(!p){return 0;}
 	if(EstArbreVide(p)){return 0;}
+	if(!p->gauche){return 0;}
+	if(!p->droite){return 0;}
 	int h_g = 1 + Hauteur(SousArbreGauche(p));
 	int h_d = 1 + Hauteur(SousArbreDroit(p));
 	if(h_g >= h_d){
@@ -95,6 +97,90 @@ ABR * RG(ABR * T , ABR * x ){
 
 
 
+ABR * RD(ABR * T, ABR * x){
+	ABR * y = SousArbreGauche(x);
+	x->gauche = SousArbreDroit(y);
+	if(SousArbreDroit(y)){
+		SousArbreDroit(y)->pere = x;
+	}
+	y->pere = x->pere;
+	if(!x->pere){
+		T = y;
+	}else if(eg(x->cle,SousArbreDroit(x->pere)->cle)){
+		x->pere->droite = y;
+	}else{
+		x->pere->gauche = y;
+	}
+	y->droite = x;
+	x->pere = y;
+	return T;
+}
+
+
+
+ABR * RGD(ABR * T, ABR * x){
+	return RD(RG(T,x),x->pere); // à revoir
+}
+
+ABR * RDG(ABR * T, ABR * x){
+	return RG(RD(T,x),x->pere); // à revoir
+}
+
+ABR * ArbreDeRotation(ABR * A){ // fonction qui cherche le noeud a faire pivoter
+	int h_g = Hauteur(SousArbreGauche(A));
+	int h_d = Hauteur(SousArbreDroit(A));
+	int cpt = 0;
+	if((h_g == 1 && h_d > 1)||(h_d == 1 && h_g > 1)){
+		if(h_g >= h_d){
+			if(h_g - h_d > 2){
+				return ArbreDeRotation(SousArbreGauche(A));
+			}else if(h_g - h_d == 2){
+				return A;
+			}else{
+				return A->pere;
+			}
+		}else{
+			if(h_d - h_g > 2){
+				return ArbreDeRotation(SousArbreDroit(A));
+			}else if(h_d - h_g == 2){
+				return A;
+			}else{
+				return A->pere;
+			}
+		}
+	}
+	if(h_g >= h_d){
+		return ArbreDeRotation(SousArbreGauche(A));
+	}else{
+		return ArbreDeRotation(SousArbreDroit(A));
+	}
+}
+
+ABR * Equilibrage(ABR * A){
+	ABR * p = A;
+	ABR * ar = ArbreDeRotation(p); // arbre a faire pivoter
+	int h_g = Hauteur(SousArbreGauche(p));
+	int h_d = Hauteur(SousArbreDroit(p));
+	if(h_g >= h_d){
+		int diff = h_g - h_d;
+		switch(diff){
+		case 1:
+			// faire une rotation
+			break;
+		case 2:
+			// faire une double rotation
+		}
+	}else{
+		int diff = h_d - h_g;
+		switch(diff){
+		case 1:
+			// faire une rotation
+			break;
+		case 2:
+			// faire une double rotation
+		}
+	}
+}
 
 
 
