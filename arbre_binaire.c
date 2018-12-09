@@ -18,7 +18,7 @@ ABR * ArbreVide(){
 	return tmp;
 }
 
-ABR * ArbreBinaire(cle * e, ABR g, ABR d){
+ABR * ArbreBinaire(cle * e, ABR * g, ABR * d){
 	ABR * tmp;
 	tmp->cle = e;
 	tmp->pere = NULL;
@@ -27,8 +27,8 @@ ABR * ArbreBinaire(cle * e, ABR g, ABR d){
 	return tmp;
 }
 
-int EstArbreVide(ABR a){
-	if(!a.cle){return 1;}
+int EstArbreVide(ABR * a){
+	if(!a->cle){return 1;}
 	return 0;
 }
 
@@ -50,14 +50,14 @@ ABR * Pere(ABR * a){
 
 
 ABR * ABR_Ajout (cle * e, ABR * A){
-	if (EstArbreVide (A)){
-		return ArbreBinaire (e, ArbreVide (), ArbreVide ());
-	}else if (eg(e,Racine (A))){
+	if (EstArbreVide(A)){
+		return ArbreBinaire(e, ArbreVide(), ArbreVide());
+	}else if (eg(e,Racine(A))){
 		return A;
-	}else if (inf(e, Racine (A))){
-		return ArbreBinaire (Racine (A), ABR_Ajout (e, SousArbreGauche (A)),SousArbreDroit (A));
+	}else if (inf(e, Racine(A))){
+		return ArbreBinaire(Racine(A), ABR_Ajout (e, SousArbreGauche(A)),SousArbreDroit(A));
 	}else{
-		return ArbreBinaire (Racine (A), SousArbreGauche (A),ABR_Ajout (e, SousArbreDroit (A)));
+		return ArbreBinaire(Racine(A), SousArbreGauche(A),ABR_Ajout(e, SousArbreDroit(A)));
 	}
 }
 
@@ -74,6 +74,9 @@ int Hauteur(ABR * A){
 	}
 	return h_d;
 }
+
+/* Dans les fonctions de rotation faut vérifier le passage de paramètres soit par valeur soit par adresse*/
+/* Ajout des free un peu partout*/
 
 
 ABR * RG(ABR * T , ABR * x ){
@@ -119,11 +122,11 @@ ABR * RD(ABR * T, ABR * x){
 
 
 ABR * RGD(ABR * T, ABR * x){
-	return RD(RG(T,x),x->pere); // à revoir
+	return RD(RG(T,x),x); // à revoir
 }
 
 ABR * RDG(ABR * T, ABR * x){
-	return RG(RD(T,x),x->pere); // à revoir
+	return RG(RD(T,x),x);
 }
 
 ABR * ArbreDeRotation(ABR * A){ // fonction qui cherche le noeud a faire pivoter
@@ -134,18 +137,14 @@ ABR * ArbreDeRotation(ABR * A){ // fonction qui cherche le noeud a faire pivoter
 		if(h_g >= h_d){
 			if(h_g - h_d > 2){
 				return ArbreDeRotation(SousArbreGauche(A));
-			}else if(h_g - h_d == 2){
-				return A;
 			}else{
-				return A->pere;
+				return A->gauche;
 			}
 		}else{
 			if(h_d - h_g > 2){
 				return ArbreDeRotation(SousArbreDroit(A));
-			}else if(h_d - h_g == 2){
-				return A;
 			}else{
-				return A->pere;
+				return A->droite;
 			}
 		}
 	}
@@ -159,27 +158,24 @@ ABR * ArbreDeRotation(ABR * A){ // fonction qui cherche le noeud a faire pivoter
 ABR * Equilibrage(ABR * A){
 	ABR * p = A;
 	ABR * ar = ArbreDeRotation(p); // arbre a faire pivoter
-	int h_g = Hauteur(SousArbreGauche(p));
-	int h_d = Hauteur(SousArbreDroit(p));
-	if(h_g >= h_d){
-		int diff = h_g - h_d;
-		switch(diff){
-		case 1:
-			// faire une rotation
-			break;
-		case 2:
-			// faire une double rotation
+	ABR * papa = ar->pere;
+	int h_g = Hauteur(SousArbreGauche(ar));
+	int h_d = Hauteur(SousArbreDroit(ar));
+	if(papa->gauche == ar){
+		if(h_g >= h_d){
+			RD(p, papa);
+		}else{
+			RGD(p, papa);
 		}
-	}else{
-		int diff = h_d - h_g;
-		switch(diff){
-		case 1:
-			// faire une rotation
-			break;
-		case 2:
-			// faire une double rotation
+	}else if(papa->droite == ar){
+		if(h_g >= h_d){
+			RDG(p, papa);
+		}else{
+			RG(p, papa);
 		}
 	}
+	A = p;
+	return A;
 }
 
 
