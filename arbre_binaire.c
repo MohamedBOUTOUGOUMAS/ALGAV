@@ -178,10 +178,30 @@ ABR * Equilibrage(ABR * A){
 	return A;
 }
 
+ABR * AVL_Ajout(cle * x, ABR * A){
+	if (EstArbreVide(A)){
+		return ArbreBinaire(x, ArbreVide (), ArbreVide ());
+	}
+	if (x == Racine(A)){
+		return A;
+	}
+	if (inf(x,Racine(A))){
+		return Equilibrage(ArbreBinaire(Racine(A),AVL_Ajout(x,SousArbreGauche(A)),SousArbreDroit(A)));
+	}else{
+		return Equilibrage ( ArbreBinaire ( Racine (A),SousArbreGauche (A),AVL_Ajout (x, SousArbreDroit (A))));
+	}
+}
 
 
-
-
+ABR * Recherche(cle * c, ABR * A){
+	if(eg(c,Racine(A))){
+		return A;
+	}else if(inf(c,Racine(A))){
+		return Recherche(c,A->gauche);
+	}else{
+		return Recherche(c,A->droite);
+	}
+}
 
 
 
