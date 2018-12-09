@@ -1,12 +1,5 @@
+#include "arbre_binaire.h"
 #include "cle.c"
-
-typedef struct ABR{
-	cle * cle;
-	struct ABR * pere;
-	struct ABR * gauche;
-	struct ABR * droite;
-} ABR;
-
 
 
 ABR * ArbreVide(){
