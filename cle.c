@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
 typedef unsigned char cle;
 
 //fonctionne, ne pas toucher
@@ -34,9 +35,15 @@ int inf(cle* a, cle* b) {
   return a[i] <= b[i];
 }
 
-int test() {
-  FILE* fp = fopen("/Users/polybulle/Downloads/cles_alea/jeu_1_nb_cles_100.txt", "r");
-  if(!fp) return 1;
+void print(cle * c){
+	for(int i = 0; i < 16; i++) {
+		printf("%x", c[i]);
+	}
+}
+
+cle * getKey() {
+  FILE* fp = fopen("/home/moumouh/git/ALGAV/cles_alea/jeu_1_nb_cles_100.txt", "r");
+  if(!fp) return NULL;
   char temp[36] = {0};
 
   fgets(temp, 35, fp);
@@ -45,9 +52,5 @@ int test() {
   
   fclose(fp);
 
-  for(int i = 0; i < 16; i++) {
-    printf("%x", c[i]);
-  }
-  
-  return 0;
+  return c;
 }
