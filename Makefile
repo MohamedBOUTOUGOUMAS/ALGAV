@@ -1,7 +1,7 @@
 src = $(wildcard *.c)
 obj = $(src:.c=.o)
 
-LDFLAGS = -wall
+LDFLAGS = -Wall
 
 prog: $(obj)
 	$(CC) -o $@ $^ $(LDFLAGS)

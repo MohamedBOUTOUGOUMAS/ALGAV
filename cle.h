@@ -14,7 +14,5 @@ cle * parse_cle(char* s);
 int eg(cle* a, cle* b);
 int inf(cle* a, cle* b);
 void print(cle * c);
-cle * getKey();
-
 
 #endif /* CLE_H_ */

@@ -1,8 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "cle.h"
 
-
-typedef unsigned char cle;
 
 //fonctionne, ne pas toucher
 cle* parse_cle(char* s) {
@@ -36,21 +35,10 @@ int inf(cle* a, cle* b) {
 }
 
 void print(cle * c){
+	printf("cle.c : ");
 	for(int i = 0; i < 16; i++) {
 		printf("%x", c[i]);
 	}
+	printf("\n");
 }
 
-cle * getKey() {
-  FILE* fp = fopen("/home/moumouh/git/ALGAV/cles_alea/jeu_1_nb_cles_100.txt", "r");
-  if(!fp) return NULL;
-  char temp[36] = {0};
-
-  fgets(temp, 35, fp);
-
-  cle* c = parse_cle(temp);
-  
-  fclose(fp);
-
-  return c;
-}

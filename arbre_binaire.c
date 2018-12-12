@@ -1,32 +1,52 @@
+#include <stdlib.h>
 #include "arbre_binaire.h"
-#include "cle.c"
+#include "cle.h"
+#include <stdio.h>
+
+/*typedef struct ABR{
+	cle * key;
+	struct ABR * pere;
+	struct ABR * gauche;
+	struct ABR * droite;
+} ABR;*/
+
 
 
 ABR * ArbreVide(){
-	ABR * tmp;
-	tmp->cle = NULL;
+	ABR * tmp = malloc(sizeof(ABR));
+	tmp->pere = malloc(sizeof(ABR));
+	tmp->gauche = malloc(sizeof(ABR));
+	tmp->droite = malloc(sizeof(ABR));
 	tmp->pere = NULL;
 	tmp->gauche = NULL;
 	tmp->droite = NULL;
 	return tmp;
 }
 
-ABR * ArbreBinaire(cle * e, ABR * g, ABR * d){
-	ABR * tmp;
-	tmp->cle = e;
-	tmp->pere = NULL;
-	tmp->gauche = g;
-	tmp->droite = d;
+ABR * ArbreBinaire(cle * e, ABR * g, ABR * d, ABR * p){
+	ABR * tmp = ArbreVide();
+	if(e){
+		tmp->key = e;
+	}
+	if(g->key){
+		tmp->gauche = g;
+	}
+	if(d->key){
+		tmp->droite = d;
+	}
+	if(p->key){
+		tmp->pere = p;
+	}
 	return tmp;
 }
 
 int EstArbreVide(ABR * a){
-	if(!a->cle){return 1;}
+	if(!a->key){return 1;}
 	return 0;
 }
 
 cle * Racine(ABR * a){
-	return a->cle;
+	return a->key;
 }
 
 ABR * SousArbreGauche(ABR * a){
@@ -42,24 +62,65 @@ ABR * Pere(ABR * a){
 }
 
 
-ABR * ABR_Ajout (cle * e, ABR * A){
-	if (EstArbreVide(A)){
-		return ArbreBinaire(e, ArbreVide(), ArbreVide());
-	}else if (eg(e,Racine(A))){
-		return A;
-	}else if (inf(e, Racine(A))){
-		return ArbreBinaire(Racine(A), ABR_Ajout (e, SousArbreGauche(A)),SousArbreDroit(A));
+void toStringABR(ABR * a){
+	if(a->key){
+		printf("Racine :");
+		print(a->key);
+	}
+	if(!a->gauche){
+		printf("fils gauche : NULL \n");
 	}else{
-		return ArbreBinaire(Racine(A), SousArbreGauche(A),ABR_Ajout(e, SousArbreDroit(A)));
+		printf("\nfils gauche :");
+		print(a->gauche->key);
+	}
+	if(!a->droite){
+		printf("fils droite : NULL \n");
+	}else{
+		printf("\nfils droite :");
+		print(a->droite->key);
+		printf("\n");
 	}
 }
 
+
+
+ABR * ABR_Ajout (cle * e, ABR * A){
+	//print(e);
+	if (EstArbreVide(A)){
+		//printf("\n A vide \n");
+		return ArbreBinaire(e, ArbreVide(), ArbreVide(), &A);
+	}else if (eg(e, A->key)){
+		//printf("\n eg \n");
+		return A;
+	}else if (inf(e, A->key)){
+		//printf("\n inf ajout a gauche \n");
+		return ArbreBinaire(A->key, ABR_Ajout(e, &A->gauche), &A->droite, &A);
+	}else{
+		//printf("\n inf ajout a droite \n");
+		return ArbreBinaire(A->key, &A->gauche, ABR_Ajout(e, &A->droite), &A);
+	}
+}
+
+
+
 int Hauteur(ABR * A){
-	ABR * p = A;
-	if(!p){return 0;}
-	if(EstArbreVide(p)){return 0;}
-	if(!p->gauche){return 0;}
-	if(!p->droite){return 0;}
+	ABR * p = ArbreBinaire(A->key,&A->gauche,&A->droite, &A->pere);
+	if(!p){
+		//printf("p");
+		return 0;
+	}
+	if(EstArbreVide(p)){
+		//printf("p vide");
+		return 0;
+	}
+	if(!p->gauche){
+		//printf("p gauche vide");
+		return 0;
+	}
+	if(!p->droite){
+		//printf("p droite vide");
+		return 0;
+	}
 	int h_g = 1 + Hauteur(SousArbreGauche(p));
 	int h_d = 1 + Hauteur(SousArbreDroit(p));
 	if(h_g >= h_d){
@@ -73,7 +134,7 @@ int Hauteur(ABR * A){
 
 
 ABR * RG(ABR * T , ABR * x ){
-	ABR * y = SousArbreDroit(x);
+	ABR * y = ArbreBinaire(SousArbreDroit(x)->key, SousArbreDroit(x)->gauche, SousArbreDroit(x)->droite, SousArbreDroit(x)->pere);
 	x->droite = SousArbreGauche(y);
 	if (SousArbreGauche(y)){
 		SousArbreGauche(y)->pere = x;
@@ -81,7 +142,8 @@ ABR * RG(ABR * T , ABR * x ){
 	y->pere = x->pere;
 	if(!x->pere){
 		T = y;
-	}else if(eg(x->cle,SousArbreGauche(x->pere)->cle)){
+		//T = ArbreBinaire(y->key,&y->gauche,&y->droite, &y->pere);
+	}else if(eg(x->key,SousArbreGauche(x->pere)->key)){
 		x->pere->gauche = y;
 	}else{
 		x->pere->droite = y;
@@ -94,7 +156,7 @@ ABR * RG(ABR * T , ABR * x ){
 
 
 ABR * RD(ABR * T, ABR * x){
-	ABR * y = SousArbreGauche(x);
+	ABR * y = ArbreBinaire(SousArbreGauche(x)->key, SousArbreGauche(x)->gauche, SousArbreGauche(x)->droite, SousArbreGauche(x)->pere);
 	x->gauche = SousArbreDroit(y);
 	if(SousArbreDroit(y)){
 		SousArbreDroit(y)->pere = x;
@@ -102,7 +164,8 @@ ABR * RD(ABR * T, ABR * x){
 	y->pere = x->pere;
 	if(!x->pere){
 		T = y;
-	}else if(eg(x->cle,SousArbreDroit(x->pere)->cle)){
+		//T = ArbreBinaire(y->key,y->gauche,y->droite);
+	}else if(eg(x->key,SousArbreDroit(x->pere)->key)){
 		x->pere->droite = y;
 	}else{
 		x->pere->gauche = y;
@@ -149,39 +212,38 @@ ABR * ArbreDeRotation(ABR * A){ // fonction qui cherche le noeud a faire pivoter
 }
 
 ABR * Equilibrage(ABR * A){
-	ABR * p = A;
+	ABR * p = ArbreBinaire(A->key,&A->gauche,&A->droite, &A->pere);
 	ABR * ar = ArbreDeRotation(p); // arbre a faire pivoter
 	ABR * papa = ar->pere;
 	int h_g = Hauteur(SousArbreGauche(ar));
 	int h_d = Hauteur(SousArbreDroit(ar));
 	if(papa->gauche == ar){
 		if(h_g >= h_d){
-			RD(p, papa);
+			return RD(p, papa);
 		}else{
-			RGD(p, papa);
+			return RGD(p, papa);
 		}
 	}else if(papa->droite == ar){
 		if(h_g >= h_d){
-			RDG(p, papa);
+			return RDG(p, papa);
 		}else{
-			RG(p, papa);
+			return RG(p, papa);
 		}
 	}
-	A = p;
-	return A;
+	return p;
 }
 
 ABR * AVL_Ajout(cle * x, ABR * A){
 	if (EstArbreVide(A)){
-		return ArbreBinaire(x, ArbreVide (), ArbreVide ());
+		return ArbreBinaire(x, ArbreVide (), ArbreVide (), ArbreVide());
 	}
 	if (x == Racine(A)){
 		return A;
 	}
 	if (inf(x,Racine(A))){
-		return Equilibrage(ArbreBinaire(Racine(A),AVL_Ajout(x,SousArbreGauche(A)),SousArbreDroit(A)));
+		return Equilibrage(ArbreBinaire(Racine(A),AVL_Ajout(x,SousArbreGauche(A)),SousArbreDroit(A), &A->pere));
 	}else{
-		return Equilibrage ( ArbreBinaire ( Racine (A),SousArbreGauche (A),AVL_Ajout (x, SousArbreDroit (A))));
+		return Equilibrage ( ArbreBinaire ( Racine (A),SousArbreGauche (A),AVL_Ajout (x, SousArbreDroit (A)), &A->pere));
 	}
 }
 
@@ -190,9 +252,9 @@ ABR * Recherche(cle * c, ABR * A){
 	if(eg(c,Racine(A))){
 		return A;
 	}else if(inf(c,Racine(A))){
-		return Recherche(c,A->gauche);
+		return Recherche(c, &A->gauche);
 	}else{
-		return Recherche(c,A->droite);
+		return Recherche(c, &A->droite);
 	}
 }
 

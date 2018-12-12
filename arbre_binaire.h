@@ -12,15 +12,17 @@
 
 
 typedef struct ABR{
-	cle * cle;
+	cle * key;
 	struct ABR * pere;
 	struct ABR * gauche;
 	struct ABR * droite;
 } ABR;
 
+
+
 ABR * ArbreVide();
 ABR * ArbreVide();
-ABR * ArbreBinaire(cle * e, ABR * g, ABR * d);
+ABR * ArbreBinaire(cle * e, ABR * g, ABR * d, ABR * p);
 int EstArbreVide(ABR * a);
 cle * Racine(ABR * a);
 ABR * SousArbreGauche(ABR * a);
@@ -37,6 +39,6 @@ ABR * Equilibrage(ABR * A);
 ABR * AVL_Ajout(cle * x, ABR * A);
 ABR * Recherche(cle * c, ABR * A);
 
-
+void toStringABR(ABR * a);
 
 #endif /* ARBRE_BINAIRE_H_ */
