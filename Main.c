@@ -3,16 +3,15 @@
 #include <stdio.h>
 #include "cle.h"
 #include "arbre_binaire.h"
-#include "tas_arbre.h"
+//#include "tas_arbre.h"
 
 
 
-int main(){
+int main00(){
 
-
-	FILE* fp = fopen("/users/Etu9/3703039/git/ALGAV/cles_alea/jeu_1_nb_cles_100.txt", "r");
+	FILE* fp = fopen("/home/moumouh/git/ALGAV/cles_alea/jeu_5_nb_cles_20000.txt", "r");
 	if(!fp) return 0;
-	cle * keys[100];
+	cle * keys[20000];
 
 	char temp[36] = {0};
 
@@ -22,7 +21,6 @@ int main(){
 	keys[0] = c;
 	while(fgets (temp, 35, fp) !=NULL ) {
 	  cle * k = parse_cle(temp);
-	   //printf("%d \n",i);
 	   keys[i] = k;
 	   if(eg(keys[i-1],k) == 0){
 		  i++;
@@ -36,7 +34,7 @@ int main(){
 	//}
 
 	ABR * a = ArbreVide();
-	toStringABR(a->gauche);
+	//toStringABR(a->gauche);
 	//a = ArbreBinaire(keys[0], a->gauche, a->droite, a->pere);
 	//ABR * b = ArbreBinaire(a->key, a->gauche, a->droite, a->pere);
 	//print(a->key);
@@ -44,20 +42,20 @@ int main(){
 	ABR * d = ArbreVide();
 	//ABR * e = ArbreVide();
 	//b = SousArbreGauche(a);
-	d = ABR_Ajout(keys[0],a);
-	d = Equilibrage(d);
-	d = ABR_Ajout(keys[1],d);
-	d = Equilibrage(d);
-	d = ABR_Ajout(keys[2],d);
-	d = Equilibrage(d);
+	for(int i = 0; i<20000; i++){
+		d = ABR_Ajout(keys[i],d);
+		d = Equilibrage(d);
+	}
 	//b = ABR_Ajout(keys[3],b);
-	toStringABR(d);
+	//toStringABR(d);
+	ABR * res = Recherche(keys[0], d);
+	toStringABR(res);
 //	for(int i =0;i<100;i++){
 //		printf("%d \n",eg(keys[i],keys[i+1]));
 //	}
 
 
-	//printf(" hauteur %d \n",Hauteur(d));
+	//printf("hauteur %d \n",Hauteur(d));
 	//free(c);
 	//free(b);
 	//free(a);

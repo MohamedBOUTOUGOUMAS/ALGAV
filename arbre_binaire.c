@@ -269,6 +269,7 @@ ABR * Equilibrage(ABR * A){
 		return A;
 	}
 }
+
 /*
 ABR * AVL_Ajout(cle * x, ABR * A){
 	if (EstArbreVide(A)){
@@ -278,25 +279,24 @@ ABR * AVL_Ajout(cle * x, ABR * A){
 		return A;
 	}
 	if (inf(x,Racine(A))){
-		return Equilibrage(ArbreBinaire(Racine(A),AVL_Ajout(x,SousArbreGauche(A)),SousArbreDroit(A), &A->pere));
+		return Equilibrage(ArbreBinaire(Racine(A),AVL_Ajout(x,SousArbreGauche(A)),SousArbreDroit(A), A->pere));
 	}else{
-		return Equilibrage ( ArbreBinaire ( Racine (A),SousArbreGauche (A),AVL_Ajout (x, SousArbreDroit (A)), &A->pere));
+		return Equilibrage(ArbreBinaire(Racine(A),SousArbreGauche(A),AVL_Ajout(x, SousArbreDroit (A)), A->pere));
 	}
 }
-
+*/
 
 ABR * Recherche(cle * c, ABR * A){
 	if(eg(c,Racine(A))){
 		return A;
 	}else if(inf(c,Racine(A))){
-		return Recherche(c, &A->gauche);
+		return Recherche(c, A->gauche);
 	}else{
-		return Recherche(c, &A->droite);
+		return Recherche(c, A->droite);
 	}
 }
 
 
-*/
 
 
 

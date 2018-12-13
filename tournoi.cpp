@@ -1,17 +1,12 @@
-#include<vector>
+#include <vector>
 #include "cle.h"
 #include "assert.h"
-
+#include "tournoi.h"
+#include <iostream>
 using namespace std;
 
-struct tournoi {
-  cle* key;
-  int degree;
-  vector<tournoi> children;
-};
-typedef struct tournoi tournoi;
 
-typedef vector<tournoi> file;
+
 
 // est_vide(t) := t == null
 
@@ -22,6 +17,17 @@ tournoi* mk_tournoi(cle* c) {
   t->key = c;
   t->degree = 0;
   return t;
+}
+
+
+void toStringTournoi(tournoi * t){
+	if(!t->key){print(t->key);}
+	if(t->children.size()>0){
+		for(auto it : t->children){
+			printf("child\n");
+			print(it.key);
+		}
+	}
 }
 
 tournoi* uniont(tournoi* t1, tournoi* t2) {
@@ -103,15 +109,15 @@ file unionf(file f1, file f2) {
   return unionft(f1, f2, NULL);
 }
 
-cle supprmin(file* f) {
+cle * supprmin(file* f) {
   tournoi* min = NULL;
   for(tournoi t : *f) {
     if(min == NULL || inf(t.key, min->key))
       min = &t;
   }
-  cle* res = min->key;
+  cle * res = min->key;
   *f = unionf(*f, decapite(min));
-  return *res;
+  return res;
 }
 
 void ajout(cle* c, file* f) {
