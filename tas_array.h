@@ -8,11 +8,13 @@ typedef struct {
 
 void ajout(tas *t, cle* c);
 
-cle* min(tas t);
+int empty(tas *t);
+
+cle* mintas(tas t);
 
 cle * supprmin(tas *t);
 
-tas * mktasvide();
+tas * mktas();
 
 tas * consiter(cle** c, size_t size);
 

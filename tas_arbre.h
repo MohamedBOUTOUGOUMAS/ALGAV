@@ -1,6 +1,8 @@
 #ifndef TAS_ARBRE
 #define TAS_ARBRE
 
+#include <stdlib.h>
+
 #include "cle.h"
 
 typedef struct node{
@@ -17,5 +19,21 @@ typedef struct tas {
   node *last;
   int size;
 } tas;
+
+tas *mktas();
+
+int empty(tas* t);
+
+cle *mintas(tas *t);
+
+void ajout(tas *t, cle* c);
+
+void consiter(tas* t, cle** keys, size_t size);
+
+cle *supprmin(tas *t);
+
+tas *uniontas(tas *t, tas *u);
+
+void destroytas(tas *t);
 
 #endif

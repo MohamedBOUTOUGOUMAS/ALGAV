@@ -17,9 +17,9 @@ void percoler(tas* t, size_t i) {
   size_t l = LEFT(i);
   size_t r = RIGHT(i);
   size_t max = i;
-  if(l <= t->size && t->a[l] > t->a[i])
+  if(l <= t->size && inf(t->a[l], t->a[i]))
     max = l;
-  if(r <= t->size && t->a[r] > t->a[max])
+  if(r <= t->size && inf(t->a[r], t->a[max]))
     max = r;
   if(max != i) {
     cle* tmp = t->a[max];
@@ -47,7 +47,7 @@ void ajout(tas *t, cle* c) {
   resize(t, t->size + 1);
   t->a[t->size] = c;
   size_t i = t->size - 1;
-  while(i > 1 && t->a[i] < t->a[PARENT(i)]) {
+  while(i > 1 && inf(t->a[i], t->a[PARENT(i)])) {
     cle *tmp = t->a[i];
     t->a[i] = t->a[PARENT(i)];
     t->a[PARENT(i)] = tmp;
@@ -56,6 +56,10 @@ void ajout(tas *t, cle* c) {
 
 cle* min(tas t) {
   return t.a[0];
+}
+
+int empty(tas *t) {
+  return t->size == 0;
 }
 
 /* Supprime et renvoie la clé minimale d'un tas.
@@ -73,7 +77,7 @@ cle * supprmin(tas *t) {
 /* créer un tas de faible capacité sans éléments
  * le tas retourné devra être libéré par l'appelant
  */
-tas * mktasvide() {
+tas * mktas() {
   tas* t = malloc(sizeof(tas) * MIN_CAPACITY);
   t->capacity = MIN_CAPACITY;
   t->size = 0;
