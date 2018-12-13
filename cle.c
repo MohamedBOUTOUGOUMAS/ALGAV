@@ -17,11 +17,9 @@ cle* parse_cle(char* s) {
 }
 
 int eg(cle* a, cle* b) {
-  for(int i = 0; i < 16; i ++) {
-    if(a[i] != b[i]) {
+  for(int i = 0; i < 16; i ++) 
+    if(a[i] != b[i])
       return 0;
-    }
-  }
   return 1;
 }
 
@@ -30,7 +28,8 @@ int inf(cle* a, cle* b) {
   while(a[i] == b[i] && i < 16) {
     i++;
   }
-  if(i == 16) {return 0;}
+  if(i == 16) 
+    return 0;
   return a[i] <= b[i];
 }
 

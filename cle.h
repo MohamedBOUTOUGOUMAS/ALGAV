@@ -11,8 +11,11 @@
 typedef unsigned char cle;
 
 cle * parse_cle(char* s);
+
 int eg(cle* a, cle* b);
+
 int inf(cle* a, cle* b);
+
 void print(cle * c);
 
 #endif /* CLE_H_ */
