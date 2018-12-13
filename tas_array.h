@@ -1,11 +1,10 @@
 #include "cle.h"
 
-typedef struct tas {
+typedef struct {
   size_t size;
   size_t capacity;
   cle** a;
-};
-typedef struct tas tas;
+} tas;
 
 void ajout(tas *t, cle* c);
 
