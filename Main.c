@@ -36,21 +36,28 @@ int main(){
 	//}
 
 	ABR * a = ArbreVide();
-	a = ArbreBinaire(keys[0], &a->gauche, &a->droite, &a->pere);
-	ABR * b = ArbreBinaire(a->key, &a->gauche, &a->droite, &a->pere);
+	toStringABR(a->gauche);
+	//a = ArbreBinaire(keys[0], a->gauche, a->droite, a->pere);
+	//ABR * b = ArbreBinaire(a->key, a->gauche, a->droite, a->pere);
 	//print(a->key);
 	//
-	//ABR * b = ArbreVide();
+	ABR * d = ArbreVide();
+	//ABR * e = ArbreVide();
 	//b = SousArbreGauche(a);
-	b = ABR_Ajout(keys[1],b);
-	b = ABR_Ajout(keys[2],b);
-	b = ABR_Ajout(keys[3],b);
-	toStringABR(b->gauche->gauche);
+	d = ABR_Ajout(keys[0],a);
+	d = Equilibrage(d);
+	d = ABR_Ajout(keys[1],d);
+	d = Equilibrage(d);
+	d = ABR_Ajout(keys[2],d);
+	d = Equilibrage(d);
+	//b = ABR_Ajout(keys[3],b);
+	toStringABR(d);
 //	for(int i =0;i<100;i++){
 //		printf("%d \n",eg(keys[i],keys[i+1]));
 //	}
 
-	//printf(" hauteur %d \n",Hauteur(b));
+
+	//printf(" hauteur %d \n",Hauteur(d));
 	//free(c);
 	//free(b);
 	//free(a);

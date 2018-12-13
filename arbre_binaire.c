@@ -14,9 +14,7 @@
 
 ABR * ArbreVide(){
 	ABR * tmp = malloc(sizeof(ABR));
-	tmp->pere = malloc(sizeof(ABR));
-	tmp->gauche = malloc(sizeof(ABR));
-	tmp->droite = malloc(sizeof(ABR));
+	tmp->key = NULL;
 	tmp->pere = NULL;
 	tmp->gauche = NULL;
 	tmp->droite = NULL;
@@ -41,7 +39,7 @@ ABR * ArbreBinaire(cle * e, ABR * g, ABR * d, ABR * p){
 }
 
 int EstArbreVide(ABR * a){
-	if(!a->key){return 1;}
+	if(a->key == NULL){return 1;}
 	return 0;
 }
 
@@ -63,66 +61,65 @@ ABR * Pere(ABR * a){
 
 
 void toStringABR(ABR * a){
-	if(a->key){
-		printf("Racine :");
-		print(a->key);
+	if(a != NULL){
+		if(a->key){
+			printf("Racine :");
+			print(a->key);
+		}
+		if(!a->gauche){
+			printf("fils gauche : NULL \n");
+		}else{
+			printf("\nfils gauche :");
+			print(a->gauche->key);
+		}
+		if(!a->droite){
+			printf("fils droite : NULL \n");
+		}else{
+			printf("\nfils droite :");
+			print(a->droite->key);
+			printf("\n");
+		}
 	}
-	if(!a->gauche){
-		printf("fils gauche : NULL \n");
-	}else{
-		printf("\nfils gauche :");
-		print(a->gauche->key);
-	}
-	if(!a->droite){
-		printf("fils droite : NULL \n");
-	}else{
-		printf("\nfils droite :");
-		print(a->droite->key);
-		printf("\n");
-	}
-}
 
+}
 
 
 ABR * ABR_Ajout (cle * e, ABR * A){
 	//print(e);
+
 	if (EstArbreVide(A)){
-		//printf("\n A vide \n");
-		return ArbreBinaire(e, ArbreVide(), ArbreVide(), &A);
+		//printf("\nA vide \n");
+		ABR * a = ArbreBinaire(e, ArbreVide(), ArbreVide(), A);
+		//toStringABR(a);
+		return a;
 	}else if (eg(e, A->key)){
-		//printf("\n eg \n");
+		//printf("\neg \n");
 		return A;
 	}else if (inf(e, A->key)){
-		//printf("\n inf ajout a gauche \n");
-		return ArbreBinaire(A->key, ABR_Ajout(e, &A->gauche), &A->droite, &A);
+		if(A->gauche == NULL){A->gauche = ArbreBinaire(NULL, ArbreVide(), ArbreVide(), A);}
+		ABR * a = ABR_Ajout(e, A->gauche);
+		A->gauche = a;
+		return A;
 	}else{
-		//printf("\n inf ajout a droite \n");
-		return ArbreBinaire(A->key, &A->gauche, ABR_Ajout(e, &A->droite), &A);
+		if(A->droite == NULL){A->droite = ArbreBinaire(NULL, ArbreVide(), ArbreVide(), A);}
+		//printf("\ninf ajout a droite \n");
+		ABR * a = ABR_Ajout(e, A->droite);
+		A->droite = a;
+		return A;
 	}
 }
 
 
 
 int Hauteur(ABR * A){
-	ABR * p = ArbreBinaire(A->key,&A->gauche,&A->droite, &A->pere);
-	if(!p){
-		//printf("p");
+	if(!A){
 		return 0;
 	}
-	if(EstArbreVide(p)){
-		//printf("p vide");
+	if(EstArbreVide(A)){
 		return 0;
 	}
-	if(!p->gauche){
-		//printf("p gauche vide");
-		return 0;
-	}
-	if(!p->droite){
-		//printf("p droite vide");
-		return 0;
-	}
-	int h_g = 1 + Hauteur(SousArbreGauche(p));
-	int h_d = 1 + Hauteur(SousArbreDroit(p));
+	int h_g = 1 + Hauteur(SousArbreGauche(A));
+	int h_d = 1 + Hauteur(SousArbreDroit(A));
 	if(h_g >= h_d){
 		return h_g;
 	}
@@ -133,7 +130,25 @@ int Hauteur(ABR * A){
 /* Ajout des free un peu partout*/
 
 
-ABR * RG(ABR * T , ABR * x ){
+
+ABR * RG(ABR * A){
+	ABR * b = A->droite;
+	A->droite = b->gauche;
+	b->gauche = A;
+	return b;
+}
+
+ABR * RD(ABR * A){
+	ABR * b = A->gauche;
+	A->gauche = b->droite;
+	b->droite = A;
+	return b;
+}
+
+
+
+
+/*ABR * RG(ABR * T , ABR * x ){
 	ABR * y = ArbreBinaire(SousArbreDroit(x)->key, SousArbreDroit(x)->gauche, SousArbreDroit(x)->droite, SousArbreDroit(x)->pere);
 	x->droite = SousArbreGauche(y);
 	if (SousArbreGauche(y)){
@@ -153,7 +168,7 @@ ABR * RG(ABR * T , ABR * x ){
 	return T;
 }
 
-
+/*
 
 ABR * RD(ABR * T, ABR * x){
 	ABR * y = ArbreBinaire(SousArbreGauche(x)->key, SousArbreGauche(x)->gauche, SousArbreGauche(x)->droite, SousArbreGauche(x)->pere);
@@ -232,7 +247,29 @@ ABR * Equilibrage(ABR * A){
 	}
 	return p;
 }
+*/
 
+ABR * Equilibrage(ABR * A){
+	ABR * g = A->gauche;
+	ABR * d = A->droite;
+	int h_g = Hauteur(g);
+	int h_d = Hauteur(d);
+	int diff = h_g - h_d;
+	if(diff == 2){
+		if(Hauteur(g->gauche) < Hauteur(g->droite)){
+			A->gauche = RG(g);
+		}
+		return RD(A);
+	}else if(diff == -2){
+		if(Hauteur(d->gauche) > Hauteur(d->droite)){
+			A->droite = RD(d);
+		}
+		return RG(A);
+	}else{
+		return A;
+	}
+}
+/*
 ABR * AVL_Ajout(cle * x, ABR * A){
 	if (EstArbreVide(A)){
 		return ArbreBinaire(x, ArbreVide (), ArbreVide (), ArbreVide());
@@ -259,7 +296,7 @@ ABR * Recherche(cle * c, ABR * A){
 }
 
 
-
+*/
 
 
 
