@@ -7,13 +7,15 @@ using namespace std;
 struct tournoi {
   cle * key;
   int degree;
-  vector<tournoi> children;
+  vector<tournoi> * children;
 };
 typedef struct tournoi tournoi;
 
 typedef vector<tournoi> file;
 
-tournoi* mk_tournoi(cle* c);
+tournoi* mk_tournoi(cle* c, int degree);
+
+tournoi * addChildTournoi(tournoi * t, tournoi * child);
 
 tournoi* uniont(tournoi* t1, tournoi* t2);
 
@@ -33,6 +35,8 @@ bool vide(file f);
 
 file * mk_file();
 
+void toStringFile(file * f);
+
 void toStringTournoi(tournoi * t);
 
 file unionf(file f1, file f2);
@@ -41,6 +45,6 @@ file unionft(file f1, file f2, tournoi* t);
 
 cle * supprmin(file* f);
 
-void ajout(cle * c, file* f);
+file * ajout(cle * c, file* f);
 
 file consinter(vector<cle> ks);

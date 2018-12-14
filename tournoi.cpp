@@ -6,45 +6,64 @@
 using namespace std;
 
 
+tournoi* mk_tournoi(cle * c, int degree) {
+	tournoi * t = (tournoi*) malloc(sizeof(tournoi));
+	t->children =(vector<tournoi> *) malloc(degree * sizeof(struct tournoi));
+	t->key = c;
+	t->degree = degree;
+	return std::move(t);
+}
 
-
-// est_vide(t) := t == null
-
-// degree(t) := t.degree
-
-tournoi* mk_tournoi(cle* c) {
-  tournoi *t = (tournoi*) malloc(sizeof(tournoi));
-  t->key = c;
-  t->degree = 0;
-  return t;
+tournoi * addChildTournoi(tournoi * t, tournoi * child){
+	printf("\n");
+	//toStringTournoi(t);
+	t->children->push_back(*child);
+	t->degree = t->degree + 1;
+	//toStringTournoi(t);
+	return t;
 }
 
 
-void toStringTournoi(tournoi * t){
-	if(!t->key){print(t->key);}
-	if(t->children.size()>0){
-		for(auto it : t->children){
-			printf("child\n");
-			print(it.key);
-		}
+void toStringFile(file * f){
+	printf("File {\n");
+	for(tournoi i : *f){
+		toStringTournoi(&i);
 	}
+	printf("}\n");
+}
+void toStringTournoi(tournoi * t){
+	printf("Tournoi {\n");
+	if(t->key){
+		print(t->key);
+	}
+	printf("  Children :");
+	if(t->children->size() > 0 ){
+		printf("\n   Child :");
+		for(tournoi it : *(t->children)){
+			toStringTournoi(&it);
+		}
+	}else{
+		printf("0\n");
+	}
+	printf("}\n");
 }
 
 tournoi* uniont(tournoi* t1, tournoi* t2) {
   tournoi* min = inf(t1->key, t2->key) ? t1 : t2;
   tournoi* max = inf(t1->key, t2->key) ? t2 : t1;
-  min->children.push_back(*max);
+  min->children->push_back(*max);
   return min;
 }
 
 file decapite(tournoi* t) {
-  return t->children;
+  return *(t->children);
 }
 
 file* mk_from_tournoi(tournoi t) {
-  auto f = new vector<tournoi>();
-  f->push_back(t);
-  return f;
+	auto f = new vector<tournoi>();
+	f->reserve(1);
+	f->push_back(t);
+	return f;
 }
 
 file* mk_file() {
@@ -73,10 +92,13 @@ file ajout_min(tournoi* t, file f) {
 file unionf(file f1, file f2);
 
 file unionft(file f1, file f2, tournoi* t) {
-  if(t == NULL) {
+	printf("unionft !!!!!!!!!!!");
+  if(t->key == NULL) {
     if(vide(f1))
+    	printf("f1");
       return f2;
     if(vide(f2))
+    	printf("f2");
       return f1;
     tournoi* t1 = mindeg(f1);
     tournoi* t2 = mindeg(f2);
@@ -106,7 +128,12 @@ file unionft(file f1, file f2, tournoi* t) {
 }
 
 file unionf(file f1, file f2) {
-  return unionft(f1, f2, NULL);
+	printf("unionf\n");
+	//toStringFile(&f1);
+	//toStringFile(&f2);
+	//file * f = mk_file();
+	tournoi * t = (tournoi*) malloc(sizeof(tournoi));
+  return unionft(f1, f2, t);
 }
 
 cle * supprmin(file* f) {
@@ -120,9 +147,13 @@ cle * supprmin(file* f) {
   return res;
 }
 
-void ajout(cle* c, file* f) {
-  tournoi* t = mk_tournoi(c);
-  *f = unionf(*f, *mk_from_tournoi(*t));
+file * ajout(cle* c, file* f) {
+	//print(c);
+	tournoi* t = mk_tournoi(c,1);
+	file * f1 = mk_from_tournoi(*t);
+	//toStringFile(f);
+	*f = unionf(*f, *f1);
+	return f;
 }
 
 file consinter(vector<cle> ks) {
