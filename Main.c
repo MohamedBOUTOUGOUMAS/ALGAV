@@ -1,17 +1,19 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/time.h>
 #include "cle.h"
 #include "arbre_binaire.h"
 //#include "tas_arbre.h"
 
 
 
-int main00(){
+int main(){
 
-	FILE* fp = fopen("/home/moumouh/git/ALGAV/cles_alea/jeu_5_nb_cles_20000.txt", "r");
+	int tailleFichier = 50000;
+	FILE* fp = fopen("/home/moumouh/git/ALGAV/cles_alea/jeu_5_nb_cles_50000.txt", "r");
 	if(!fp) return 0;
-	cle * keys[20000];
+	cle * keys[tailleFichier];
 
 	char temp[36] = {0};
 
@@ -29,30 +31,27 @@ int main00(){
 	}
 	fclose(fp);
 
-	//for(int i =0;i<100;i++){
-		//print(keys[1]);
-	//}
+
 
 	ABR * a = ArbreVide();
-	//toStringABR(a->gauche);
-	//a = ArbreBinaire(keys[0], a->gauche, a->droite, a->pere);
-	//ABR * b = ArbreBinaire(a->key, a->gauche, a->droite, a->pere);
-	//print(a->key);
-	//
 	ABR * d = ArbreVide();
-	//ABR * e = ArbreVide();
-	//b = SousArbreGauche(a);
-	for(int i = 0; i<20000; i++){
+	time_t begin,end;
+
+	for(int i = 0; i<tailleFichier; i++){
 		d = ABR_Ajout(keys[i],d);
 		d = Equilibrage(d);
 	}
-	//b = ABR_Ajout(keys[3],b);
-	//toStringABR(d);
+	struct timeval stop, start;
+	gettimeofday(&start, NULL);
+
 	ABR * res = Recherche(keys[0], d);
 	toStringABR(res);
-//	for(int i =0;i<100;i++){
-//		printf("%d \n",eg(keys[i],keys[i+1]));
-//	}
+
+	gettimeofday(&stop, NULL);
+
+	printf("temps d'execution %lu\n",stop.tv_usec - start.tv_usec);
+	//
+	//
 
 
 	//printf("hauteur %d \n",Hauteur(d));

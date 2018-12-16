@@ -195,11 +195,7 @@ file unionf(file f1, file f2) {
 }
 
 cle * supprmin(file f) {
-	tournoi min = mk_tournoi(NULL);
-	for (tournoi t : f) {
-		if (min.key == NULL || inf(t.key, min.key))
-			min = t;
-	}
+	tournoi min = f.at(0);
 	cle * res = min.key;
 	f = unionf(f, decapite(min));
 	return std::move(res);
@@ -222,3 +218,5 @@ file consinter(vector<cle *> ks) {
 	//toStringFile(f);
 	return std::move(f);
 }
+
+

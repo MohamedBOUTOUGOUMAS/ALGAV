@@ -46,3 +46,5 @@ cle * supprmin(file f);
 file ajout(cle * c, file f);
 
 file consinter(vector<cle *> ks);
+
+

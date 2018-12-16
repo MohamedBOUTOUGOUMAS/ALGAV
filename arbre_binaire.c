@@ -285,7 +285,6 @@ ABR * AVL_Ajout(cle * x, ABR * A){
 	}
 }
 */
-
 ABR * Recherche(cle * c, ABR * A){
 	if(eg(c,Racine(A))){
 		return A;
