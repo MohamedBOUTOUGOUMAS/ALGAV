@@ -17,11 +17,21 @@ using namespace std;
 
 
 int main(){
-	FILE* fp = fopen("/home/moumouh/workspace_c++/FilesBinomiales/src/cles_alea/jeu_1_nb_cles_100.txt", "r");
+	int tailleFichier = 5000;
+	string path = ("/home/moumouh/workspace_c++/FilesBinomiales/src/cles_alea/jeu_1_nb_cles_");
+	string extension = to_string(tailleFichier) + ".txt";
+	path = path + extension;
+	//printf("%s",path.c_str());
+	FILE* fp = fopen(path.c_str(), "r");
 	//FILE* fp = fopen("/users/Etu9/3703039/c++_workspace/File_Binomiales/src/cles_alea/jeu_1_nb_cles_100.txt", "r");
-	if(!fp) return 0;
+	if(!fp){
+		printf("merde");
+		return 0;
+	}
 
-	cle * keys[4];
+
+
+	cle * keys[tailleFichier];
 
 	char temp[36] = {0};
 
@@ -29,7 +39,7 @@ int main(){
 	cle * c = parse_cle(temp);
 	int i = 1;
 	keys[0] = c;
-	while(fgets (temp, 35, fp) !=NULL && i<5 ) {
+	while(fgets (temp, 35, fp) !=NULL) {
 	  cle * k = parse_cle(temp);
 	   keys[i] = k;
 	   if(eg(keys[i-1],k) == 0){
@@ -55,8 +65,8 @@ int main(){
 	file f = mk_from_tournoi(xp);
 	//toStringFile(f);
 	vector<cle *> vec;
-	vec.reserve(4);
-	for(int i = 0; i<4 ; i++){
+	vec.reserve(tailleFichier);
+	for(int i = 0; i< tailleFichier; i++){
 		vec.push_back(keys[i]);
 	}
 
@@ -85,6 +95,6 @@ int main(){
 
 	//std::cout<<f.size()<<endl;
 	//free(t);
-	//delete[]&vec;
+	//delete[]&vec;*/
 	return 0;
 }
