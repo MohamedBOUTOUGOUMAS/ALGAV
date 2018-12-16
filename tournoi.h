@@ -5,15 +5,15 @@
 using namespace std;
 
 struct tournoi {
-  cle * key;
-  int degree;
-  vector<tournoi> children;
+  cle * key = NULL;
+  int degree = 0;
+  vector<tournoi> * children = new vector<tournoi>();
 };
 typedef struct tournoi tournoi;
 
 typedef vector<tournoi> file;
 
-tournoi mk_tournoi(cle* c, int degree);
+tournoi mk_tournoi(cle* c);
 
 tournoi addChildTournoi(tournoi t, tournoi child);
 

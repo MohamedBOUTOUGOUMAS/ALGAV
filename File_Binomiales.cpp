@@ -35,11 +35,10 @@ int main(){
 	   if(eg(keys[i-1],k) == 0){
 		  i++;
 	   }
-
 	}
 	fclose(fp);
 
-	tournoi xp = mk_tournoi(keys[0],1);
+	tournoi xp = mk_tournoi(keys[0]);
 	//tournoi mac = mk_tournoi(keys[1],1);
 	//tournoi t = mk_tournoi(keys[2],1);
 	//tournoi u = uniont(xp,mac);
@@ -53,14 +52,18 @@ int main(){
 
 	//t->children.push_back();
 	//toStringTournoi(t);
-	//file f = mk_from_tournoi(xp);
-	//vector<cle *> vec;
-	//vec.reserve(4);
-	/*for(int i = 0; i<4 ; i++){
+	file f = mk_from_tournoi(xp);
+	//toStringFile(f);
+	vector<cle *> vec;
+	vec.reserve(4);
+	for(int i = 0; i<4 ; i++){
 		vec.push_back(keys[i]);
 	}
 
-	f = consinter(vec);*/
+	f = consinter(vec);
+	toStringFile(f);
+	//f.~vector();
+
 	/*f = ajout(keys[1], f);
 	f = ajout(keys[2], f);
 	f = ajout(keys[3], f);*/
@@ -70,16 +73,18 @@ int main(){
 //	f->push_back(*mac);
 //	f->push_back(*bref);
 
+	/*file d = mk_file();
+	d.reserve(1);
+
 	file f = mk_file();
-	f = ajout(keys[0],f);
-	//toStringFile(*f);
+	f.reserve(1);
+	f.push_back(mac);
+	d = ajout(keys[0],f);*/
+	//f = d;
+	//f = ajout(keys[0],f);
+
 	//std::cout<<f.size()<<endl;
 	//free(t);
 	//delete[]&vec;
-	//delete[]keys;
-	//delete[]&mac;
-
-	delete[]&f;
-	delete[]&xp;
 	return 0;
 }
