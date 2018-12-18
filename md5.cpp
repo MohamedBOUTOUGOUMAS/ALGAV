@@ -88,7 +88,7 @@ static unsigned* md5(string msg) {
 	for(nmsglen = msglen * 8 + 1; nmsglen % 512 != 448; nmsglen++); // calculating the new length in bits
 	nmsglen /= 8;
 
-	nmsg = (uint1b_t*)calloc(nmsglen + 64, 1); // adding '0' to the message
+	nmsg = (uint1b_t*)calloc(nmsglen + 8, 1); // adding '0' to the message
 	memcpy(nmsg, msg.c_str(), msglen);
 	nmsg[msglen] = (uint1b_t) 0x80; // adding '1' to the message
 
@@ -165,20 +165,19 @@ static unsigned* md5(string msg) {
 	free(nmsg);
 
 	// create un array of hashes
-	uint4b_t hashed[4] = malloc(16);
-        h[0] = h0;
-        h[1] = h1;
-        h[2] = h2;
-        h[3] = h3;
-
-	return hashed;
+	//uint4b_t hashed[4] = {h0,h1,h2,h3};
+	uint4b_t * hashed = (uint4b_t *)malloc(16);
+	hashed[0] = h0;
+	hashed[1] = h1;
+	hashed[2] = h2;
+	hashed[3] = h3;
+	return std::move(hashed);
 }
 
 static string md5toString(string msg) {
 	string str;
 	int i;
 	uint4b_t *d = md5(msg);
-	cout<<*d<<endl;
 	for (i = 0; i<4; i++){
 		char s[9];
 		uint1b_t *h;
@@ -190,66 +189,11 @@ static string md5toString(string msg) {
 	return str;
 }
 
-/*static key getHashedKey(std::string msg){
-
-	std::uint32_t *d = md5(msg); // @suppress("Type cannot be resolved")
-
-	std::uint32_t hashed[4];
-
-	for (int i = 0; i<4; i++){
-			std::uint8_t *hh;
-			hh=(std::uint8_t *)&d[i];
-			std::uint32_t h1 = 0 | hh[0];
-			h1 = h1 << 24;
-			std::uint32_t h2 = 0 | hh[1];
-			h1 = h1 << 16;
-			std::uint32_t h3 = 0 | hh[2];
-			h1 = h1 << 8;
-			std::uint32_t h4 = 0 | hh[3];
-
-			h3 = h3 | h4;
-			h2 = h2 | h3;
-			h1 = h1 | h2;
-
-			hashed[i] = h1;
-		}
-
-	std::uint64_t left = 0;
-	std::uint64_t right = 0;
-
-	left = left | hashed[0];
-	left = left << 32;
-	left = left | hashed[1];
-
-	right = right | hashed[2];
-	right = right << 32;
-	right = right | hashed[3];
-
-	key mkey = key(left,right);
-
-	return mkey;
-}
-
-static string getRandomString( size_t length )
-{
-    auto randchar = []() -> char
-    {
-        const char charset[] =
-        "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz";
-        const size_t max_index = (sizeof(charset) - 1);
-        return charset[ rand() % max_index ];
-    };
-    string str(length,0);
-    generate_n( str.begin(), length, randchar );
-    return str;
-}*/
 
 int main(){
 
 	int tailleFichier = 1;
-	string path = ("Shakespeare/");
+	string path = ("/home/moumouh/workspace_c++/FilesBinomiales/src/Shakespeare/");
 	string extension = to_string(tailleFichier) + "henryiv.txt";
 	path = path + extension;
 
@@ -265,28 +209,35 @@ int main(){
 	char temp[36] = {0};
 
 	while(fgets (temp, 35, fp) !=NULL) {
+		cout<<temp<<endl;
 		string k = md5toString(temp);
 		cle * cl = parse_cle(k.c_str());
+		print(cl);
+		cout<<k<<endl;
 		keys.push_back(cl);
 	}
 	fclose(fp);
 
-	for(auto i:keys){
+	/*for(auto i:keys){
 		print(i);
-	}
+	}*/
 
-//	string msgrandom = getRandomString(5);
-//	MD5("The quick brown fox jumps over the lazy dog") = 9e107d9d372bb6826bd81d3542a419d6
-	//string msg = "exeunt";
-	//string value = md5toString(msg);
-//	cout << "The md5 hash of \"" << msg << "\" is :" << endl;
-//	cout << value << endl;
-//	cout << ((value == "9e107d9d372bb6826bd81d3542a419d6") ? "true" : "false") << endl;
-//	string msg2 = "";
-//	string value2 = md5toString(msg2);
-//	cout << "The md5 hash of \"" << msg2 << "\" is :" << endl;
-//	cout << value2 + "\n" << ((value2 == "d41d8cd98f00b204e9800998ecf8427e") ? "true" : "false") << endl;
-	//key hashedKey = getHashedKey("");
-	//cout << std::hex << value << endl;
+
+	/*string msg = "salut les gens comment allez vous";
+	string msg1 = "ALGAV";
+	string msg2 = "salut khbc gens comment allez vous";
+	string msg3 = "salut N gens comment allez vous";
+	string msg4 = "salut X gens comment allez vous";
+	string value = md5toString(msg);
+	string value1 = md5toString(msg1);
+	string value2 = md5toString(msg2);
+	string value3 = md5toString(msg3);
+	string value4 = md5toString(msg4);
+	cout << "The md5 hash of \"" << msg << "\" is :"<<value << endl;
+	cout << "The md5 hash of \"" << msg1 << "\" is :"<<value1 << endl;
+	cout << "The md5 hash of \"" << msg2 << "\" is :"<<value2 << endl;
+	cout << "The md5 hash of \"" << msg3 << "\" is :"<<value3 << endl;
+	cout << "The md5 hash of \"" << msg4 << "\" is :"<<value4 << endl;
+*/
 return 0;
 }
