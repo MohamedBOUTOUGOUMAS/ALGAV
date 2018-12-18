@@ -165,7 +165,11 @@ static unsigned* md5(string msg) {
 	free(nmsg);
 
 	// create un array of hashes
-	static uint4b_t hashed[4] = {h0,h1,h2,h3};
+	uint4b_t hashed[4] = malloc(16);
+        h[0] = h0;
+        h[1] = h1;
+        h[2] = h2;
+        h[3] = h3;
 
 	return hashed;
 }
@@ -245,7 +249,7 @@ static string getRandomString( size_t length )
 int main(){
 
 	int tailleFichier = 1;
-	string path = ("/home/moumouh/workspace_c++/FilesBinomiales/src/Shakespeare/");
+	string path = ("Shakespeare/");
 	string extension = to_string(tailleFichier) + "henryiv.txt";
 	path = path + extension;
 
@@ -267,9 +271,9 @@ int main(){
 	}
 	fclose(fp);
 
-//	for(auto i:keys){
-//		print(i);
-//	}
+	for(auto i:keys){
+		print(i);
+	}
 
 //	string msgrandom = getRandomString(5);
 //	MD5("The quick brown fox jumps over the lazy dog") = 9e107d9d372bb6826bd81d3542a419d6
