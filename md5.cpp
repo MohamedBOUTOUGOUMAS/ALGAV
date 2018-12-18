@@ -209,8 +209,18 @@ int main(){
 	char temp[36] = {0};
 
 	while(fgets (temp, 35, fp) !=NULL) {
-		cout<<temp<<endl;
-		string k = md5toString(temp);
+		string t = temp;
+		string mot = "";
+
+		for(int i=0; i<t.length(); i++){
+			mot += temp[i];
+		}
+
+		//cout<<mot.length()<<endl;
+		mot = mot.erase(mot.length()-1,1);
+//		cout<<mot<<endl;
+//		cout<<mot.length()<<endl;
+		string k = md5toString(mot);
 		cle * cl = parse_cle(k.c_str());
 		print(cl);
 		cout<<k<<endl;
