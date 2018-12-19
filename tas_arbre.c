@@ -63,16 +63,16 @@ void remove_last(tas *t) {
   if(empty(t))
     return;
   node* last = t->last;
-  if(!last->parent) { // t->root == t->last
+  if(!last->parent) { // then there's only one element
     free(t->root);
     return;
-  }
+  } // Otherwise, there's more
   node* parent = last->parent;
-  free(last);
   if(parent->left == last)
     parent->left = NULL;
   else
     parent->right = NULL;
+  free(last);
   t->size--;
   t->last = go_to(t, t->size);
 }
@@ -105,12 +105,14 @@ void ajout(tas *t, cle* c) {
   }
 }
 
-void consiter(tas* t, cle** keys, size_t size) {
+tas* consiter(cle** keys, size_t size) {
+  tas* t = malloc(sizeof(tas));
   t->root = NULL;
   t->last = NULL;
   t->size = 0;
   for(size_t i = 0; i < size; i++)
     ajout(t, keys[i]);
+  return t;
 }
 
 cle *supprmin(tas *t) {
@@ -147,7 +149,9 @@ tas *uniontas(tas *t, tas *u) {
     big = u;
     small = t;
   }
-  consiter(big, keys(small), small->size);
+  cle** cles = keys(small);
+  for(size_t i = 0; i < small->size; i++)
+    ajout(big, cles[i]);
   return big;
 }
 

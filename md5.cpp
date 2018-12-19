@@ -265,9 +265,12 @@ int main(){
 	char temp[36] = {0};
 
 	while(fgets (temp, 35, fp) !=NULL) {
-		string k = md5toString(temp);
-		cle * cl = parse_cle(k.c_str());
-		keys.push_back(cl);
+          for(int i = 0; i < 36; i++)
+            if(temp[i] == '\n')
+              temp[i] = '\0';
+	  string k = md5toString(temp);
+          cle * cl = parse_cle(k.c_str());
+          keys.push_back(cl);
 	}
 	fclose(fp);
 

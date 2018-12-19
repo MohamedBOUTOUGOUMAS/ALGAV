@@ -1,4 +1,5 @@
 #include "cle.h"
+#include <stdlib.h>
 
 typedef struct {
   size_t size;
@@ -10,7 +11,7 @@ void ajout(tas *t, cle* c);
 
 int empty(tas *t);
 
-cle* mintas(tas t);
+cle* mintas(tas *t);
 
 cle * supprmin(tas *t);
 

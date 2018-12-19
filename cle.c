@@ -34,10 +34,9 @@ int inf(cle* a, cle* b) {
 }
 
 void print(cle * c){
-	printf("cle.c : ");
-	for(int i = 0; i < 16; i++) {
-		printf("%x", c[i]);
-	}
-	printf("\n");
+  for(int i = 0; i < 16; i++) {
+    printf("%02x", c[i]);
+  }
+  printf("\n");
 }
 

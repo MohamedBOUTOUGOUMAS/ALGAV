@@ -4,7 +4,7 @@ obj = $(src:.c=.o)
 LDFLAGS = -Wall
 
 prog: $(obj)
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) -g -o $@ $^ $(LDFLAGS)
 
 .PHONY: clean
 clean:

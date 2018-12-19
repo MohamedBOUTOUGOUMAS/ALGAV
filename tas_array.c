@@ -16,25 +16,22 @@
 void percoler(tas* t, size_t i) {
   size_t l = LEFT(i);
   size_t r = RIGHT(i);
-  size_t max = i;
-  if(l <= t->size && inf(t->a[l], t->a[i]))
-    max = l;
-  if(r <= t->size && inf(t->a[r], t->a[max]))
-    max = r;
-  if(max != i) {
-    cle* tmp = t->a[max];
-    t->a[max] = t->a[i];
+  size_t min = i;
+  if(l < t->size && inf(t->a[l], t->a[i]))
+    min = l;
+  if(r < t->size && inf(t->a[r], t->a[min]))
+    min = r;
+  if(min != i) {
+    cle* tmp = t->a[min];
+    t->a[min] = t->a[i];
     t->a[i] = tmp;
-    percoler(t, max);
+    percoler(t, min);
   }
 }
 
 void resize(tas *t, size_t newsize) {
-  if(newsize < t->capacity / 2) {
-    t->a = realloc(t->a, t->capacity * sizeof(cle*) / 2);
-    t->capacity = t->capacity / 2;
-  }
-  else if(newsize > t->capacity) {
+  t->size = newsize;
+  if(newsize > t->capacity) {
     t->a = realloc(t->a, t->capacity * sizeof(cle*) * 2);
     t->capacity = t->capacity * 2;
   }
@@ -45,17 +42,18 @@ void resize(tas *t, size_t newsize) {
  */
 void ajout(tas *t, cle* c) {
   resize(t, t->size + 1);
-  t->a[t->size] = c;
+  t->a[t->size - 1] = c;
   size_t i = t->size - 1;
   while(i > 1 && inf(t->a[i], t->a[PARENT(i)])) {
     cle *tmp = t->a[i];
     t->a[i] = t->a[PARENT(i)];
     t->a[PARENT(i)] = tmp;
+    i = PARENT(i);
   }
 }
 
-cle* min(tas t) {
-  return t.a[0];
+cle* mintas(tas *t) {
+  return t->a[0];
 }
 
 int empty(tas *t) {
@@ -78,7 +76,8 @@ cle * supprmin(tas *t) {
  * le tas retourné devra être libéré par l'appelant
  */
 tas * mktas() {
-  tas* t = malloc(sizeof(tas) * MIN_CAPACITY);
+  tas* t = malloc(sizeof(tas));
+  t->a = malloc(MIN_CAPACITY * sizeof(cle*));
   t->capacity = MIN_CAPACITY;
   t->size = 0;
   return t;
@@ -94,8 +93,8 @@ tas * consiter(cle** c, size_t size) {
   tas *t = malloc(sizeof(tas));
   t->a = c;
   t->size = size;
-  t->capacity = sizeof(c)/sizeof(cle*);;
-  for(int i = t->size / 2; i > 0; i--) {
+  t->capacity = size;
+  for(int i = t->size / 2; i >= 0; i--) {
     percoler(t, i);
   }
   return t;
@@ -110,18 +109,39 @@ void destroytas(tas *t) {
    détruit les deux tas en arguments
    le tas résultant doit être détruit par l'appelant
 */
-tas* uniontas(tas* t, tas* u) {
-  tas *big, *small;
-  if(t->capacity > u->capacity) {
-    big = t;
-    small = u;
-  } else {
-    big = u;
-    small = t;
+
+tas * uniontas(tas *t, tas *u) {
+  size_t new_size = t->size + u->size;
+  cle** new_a = malloc(new_size * sizeof(cle*));
+  size_t i = 0;
+  while(i < t->size) {
+    new_a[i] = t->a[i];
+    i++;
   }
-  resize(big, big->size + small->size);
-  memcpy(big->a + big->size * sizeof(cle*), small->a,
-         small->size * sizeof(cle*));
-  destroytas(small);
-  return consiter(big->a, big->size + small->size);
+  while(i < new_size) {
+    new_a[i] = u->a[i - t->size];
+    i++;
+  }
+  destroytas(t);
+  destroytas(u);
+  return consiter(new_a, new_size);
 }
+
+/* tas* uniontas(tas* t, tas* u) { */
+/*   tas *big, *small; */
+/*   if(t->capacity > u->capacity) { */
+/*     big = t; */
+/*     small = u; */
+/*   } else { */
+/*     big = u; */
+/*     small = t; */
+/*   } */
+/*   size_t old_big_size = big->size; */
+/*   resize(big, big->size + small->size); */
+/*   memcpy(big->a + old_big_size * sizeof(cle*), small->a, */
+/*          small->size * sizeof(cle*)); */
+/*   tas *result = consiter(big->a, big->size); */
+/*   destroytas(small); */
+/*   destroytas(big); */
+/*   return result; */
+/* } */

@@ -28,7 +28,7 @@ cle *mintas(tas *t);
 
 void ajout(tas *t, cle* c);
 
-void consiter(tas* t, cle** keys, size_t size);
+tas* consiter(cle** keys, size_t size);
 
 cle *supprmin(tas *t);
 
